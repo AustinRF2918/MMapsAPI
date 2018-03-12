@@ -1,16 +1,11 @@
 from flask import Flask
-from flask_restful import Resource, Api
+from flask_restful import Api
+
+from pin import PinDao, Pin
+from decal_image import DecalImageDao, DecalImage
 
 app = Flask(__name__)
 api = Api(app)
-
-class Pin(Resource):
-    def get(self):
-        return {"lol": "haha"}
-
-class DecalImage(Resource):
-    def get(self):
-        return {"url": "blah"}
 
 api.add_resource(Pin, "/pins")
 api.add_resource(DecalImage, "/decals")
