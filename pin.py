@@ -2,22 +2,40 @@
 
 from flask_restful import Resource, fields, marshal_with
 
+# Company fields data structure that is directly used
+# by the Pin structure.
+company_fields = {
+    "title": fields.String,
+    "message": fields.String
+    "is_featured": fields.Boolean,
+    "photo_stream": fields.List(fields.Url)
+}
+
 # The following is fields on the pin db structure that
-# we will publically expose.
+# we will publicly expose.
 pin_fields = {
+    # Base Metadata
     "id": fields.String,
+    "hash": fields.String,
+
+    # Core Domain Data
+    "phone_number": fields.String,
     "description": fields.String,
     "address": fields.String,
-    "image": fields.String, # This is a URL.
-    "hash": fields.String,
-    "image": fields.String,
-    "phone_number": fields.String,
+    "image": fields.Url,
+    "company_data": fields.Nested(company_fields),
 
+    # Tagging Metadata
+    "tags": fields.List(fields.String),
+
+    # Locational Metadata
     "latitude": fields.Float,
     "longitude": fields.Float,
 
-    "social_links": fields.List,
-    "website_link": fields.String
+    # Link Metadata
+    "logo_image_link": fields.Url,
+    "social_links": fields.List(fields.Url),
+    "website_link": fields.Url,
 }
 
 class PinDao:
