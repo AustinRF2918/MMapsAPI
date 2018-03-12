@@ -1,4 +1,4 @@
-'''Defines the DecalImage DAO and data structure.'''
+"""Defines the DecalImage DAO and data structure."""
 
 from flask_restful import Resource, fields, marshal_with
 
@@ -8,6 +8,7 @@ decal_image_fields = {
 }
 
 class DecalImageDao:
+    """Data access object for a decal image. Will be connected to DB later on."""
     def __init__(self, id, url):
         self.id = id
         self.url = url

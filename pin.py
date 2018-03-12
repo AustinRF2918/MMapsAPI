@@ -1,4 +1,4 @@
-'''Defines the Pin DAO and data structure.'''
+"""Defines the Pin DAO and data structure."""
 
 from flask_restful import Resource, fields, marshal_with
 
@@ -7,6 +7,7 @@ pin_fields = {
 }
 
 class PinDao:
+    """Data access object for a pin . Will be connected to DB later on."""
     def __init__(self, id):
         self.id = id
 
