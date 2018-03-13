@@ -24,7 +24,7 @@ def handle_resource_not_found(error):
         "type": type(error).__name__,
         "message": error.message,
         "resource": error.resource,
-        "uuid": error.uuid
+        "resource_id": error.resource_id
     }), 404
 
 

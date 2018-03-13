@@ -10,9 +10,9 @@ class MissingFieldException(Exception):
 
 
 class ResourceNotFoundException(Exception):
-    def __init__(self, resource, uuid):
+    def __init__(self, resource, resource_id):
         self.resource = resource
-        self.uuid = uuid
-        self.message = "Could not find {} with uuid {}.".format(resource, uuid)
+        self.resource_id = resource_id
+        self.message = "Could not find {} with uuid {}.".format(resource, resource_id)
 
 
