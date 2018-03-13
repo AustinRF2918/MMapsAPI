@@ -1,42 +1,24 @@
-from flask import Flask, jsonify
+"""Starting point of the application. Maps resources to endpoints and runs the application."""
+
+from flask import Flask
 from flask_restful import Api
 
-from common import MissingFieldException, ResourceNotFoundException
-from pin import Pin, PinList, PinHashList
-from decal_image import DecalImageDao, DecalImage
+import errors.error_handlers
+from resources.decal import Decal, DecalList
+from resources.pin import Pin, PinList, PinHashList
 
+# Mapping of blueprint onto Flask application.
 app = Flask(__name__)
-api = Api(app)
+app.register_blueprint(errors.error_handlers.blueprint)
 
+# Mapping of Flask-RESTful resources to endpoints.
+api = Api(app)
 api.add_resource(PinList, "/pins/")
 api.add_resource(Pin, "/pins/<id>")
 api.add_resource(PinHashList, "/pins/hash")
-api.add_resource(DecalImage, "/decals")
 
-# Global error handler for the application. If this gets more complex, move this
-# to its own file.
-@app.errorhandler(MissingFieldException)
-def handle_invalid_usage(error):
-    return jsonify({
-        "type": type(error).__name__,
-        "message": error.message,
-        "missing_field": error.field_name
-    }), 500
+api.add_resource(DecalList, "/decals/")
+api.add_resource(Decal, "/decals/<id>")
 
-@app.errorhandler(ResourceNotFoundException)
-def handle_invalid_usage(error):
-    return jsonify({
-        "type": type(error).__name__,
-        "message": error.message,
-        "resource": error.resource,
-        "uuid": error.uuid
-    }), 500
-
-@app.errorhandler(Exception)
-def handle_invalid_usage(error):
-    return jsonify({
-        "type": type(error).__name__,
-        "message": str(error)
-    }), 500
-
+# Start it!
 app.run(debug = True)
