@@ -1,4 +1,5 @@
 """Tools for working with schema types."""
+import copy
 from flask_restful import fields
 
 
@@ -19,6 +20,25 @@ validation_mapping = {
     fields.Integer: int,
     fields.Float: float,
 }
+
+
+def merge_with_schema(old_data, new_data, schema):
+    writeable_fields = []
+    schema_fields = schema.get("fields")
+
+    for key, value in schema_fields.items():
+        if not value["read_only"]:
+            writeable_fields.append(key)
+
+    merged_data = copy.deepcopy(old_data)
+
+    for field in writeable_fields:
+        if field in new_data.keys():
+            merged_data[field] = new_data[field]
+
+    is_matching_schema(merged_data, schema)
+
+    return merged_data
 
 
 def is_matching_schema(data, schema):

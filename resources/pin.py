@@ -21,7 +21,6 @@ class PinList(Resource):
 
 
 class PinHashList(Resource):
-
     @marshal_with(fieldize_schema(pin_reduced_schema))
     def get(self):
         return mock_pin_dao.get_all()
@@ -39,6 +38,6 @@ class Pin(Resource):
         return mock_pin_dao.delete_item(id)
 
     @marshal_with(fieldize_schema(pin_schema))
-    def put(self, id):
-        pin = request.get_json(force=True)
-        return mock_pin_dao.update_item(id, pin)
+    def patch(self, id):
+        new_fields = request.get_json(force=True)
+        return mock_pin_dao.update_item(id, new_fields)

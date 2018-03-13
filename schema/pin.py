@@ -10,21 +10,25 @@ company_schema = {
         "title": {
             "type": fields.String,
             "required": True,
+            "read_only": False,
             "description": "The name of a company that a company wishes to set as publicly viewable."
         },
         "message": {
             "type": fields.String,
             "required": True,
+            "read_only": False,
             "description": "The message a company wishes to set as publicly viewable."
         },
         "is_featured": {
             "type": fields.Boolean,
             "required": True,
+            "read_only": False,
             "description": "If a company has been featured by the client or not."
         },
         "photo_stream": {
             "type": fields.List(fields.String),
             "required": False,
+            "read_only": False,
             "description": "Optional list of photo URLs a company wishes to display."
         }
     },
@@ -43,12 +47,14 @@ pin_schema = {
         "id": {
             "type": fields.String,
             "required": False,
+            "read_only": True,
             "description": "Server generated ID of a pin."
         },
 
         "hash": {
             "type": fields.String,
             "required": False,
+            "read_only": True,
             "description": "Server generated hash of a pin."
         },
 
@@ -56,26 +62,31 @@ pin_schema = {
         "phone_number": {
             "type": fields.String,
             "required": False,
+            "read_only": False,
             "description": "Phone number a company can be contacted at."
         },
         "description": {
             "type": fields.String,
             "required": True,
+            "read_only": False,
             "description": "Publicly viewable description of a company."
         },
         "address": {
             "type": fields.String,
             "required": True,
+            "read_only": False,
             "description": "Publicly viewable address of a company."
         },
         "image": {
             "type": fields.String,
             "required": False,
+            "read_only": False,
             "description": "Link to the URL of an establishment a company wishes to use."
         },
         "company_data": {
             "type": fields.Nested(fieldize_schema(company_schema)),
             "required": False,
+            "read_only": False,
             "description": "Company data structure giving more metadata about parent company of an establishment",
             "schema": company_schema
         },
@@ -84,6 +95,7 @@ pin_schema = {
         "tags": {
             "type": fields.List(fields.String),
             "required": False,
+            "read_only": False,
             "description": "List of tags a company wishes to use."
         },
 
@@ -91,11 +103,13 @@ pin_schema = {
         "latitude": {
             "type": fields.Float,
             "required": True,
+            "read_only": False,
             "description": "Latitude in float of an establishment."
         },
         "longitude": {
             "type": fields.Float,
             "required": True,
+            "read_only": False,
             "description": "Longitude in float of an establishment."
         },
 
@@ -103,16 +117,19 @@ pin_schema = {
         "logo_image_link": {
             "type": fields.String,
             "required": False,
+            "read_only": False,
             "description": "Logo of an establishment."
         },
         "social_links": {
             "type": fields.List(fields.String),
             "required": False,
+            "read_only": False,
             "description": "List of social links related to an establishment."
         },
         "website_link": {
             "type": fields.String,
             "required": False,
+            "read_only": False,
             "description": "Link to a website of an establishment."
         }
     },

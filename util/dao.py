@@ -3,7 +3,7 @@
 import uuid
 
 from errors.error_types import ResourceNotFoundException
-from util.schema_tools import is_matching_schema
+from util.schema_tools import is_matching_schema, merge_with_schema
 
 
 class MockDao:
@@ -28,27 +28,25 @@ class MockDao:
         el["id"] = str(uuid.uuid4())
         el["hash"] = hash(repr(el))
 
+        # TODO: Replace with actual DB push
         self.db_state.append(el)
 
         return el
 
     def update_item(self, el_id, el):
-        # TODO: implement this method.
+        # TODO: Replace with actual DB GET
         old_el = self.get_item(el_id)
+        merged_el = merge_with_schema(old_el, el, self.resource_schema)
 
-        # Method merge_on_fields(fields, old_pin, new_pin)
+        # TODO Replace with DB PUT
+        self.delete_item(el_id)
+        self.db_state.append(merged_el)
 
-        # new_pin = merge_on_fields(pin_putable_fields, old_pin, pin)
-
-        # If company is present...
-        # new_pin = merge_on_fields(pin_putable_fields, new_pin, pin.get("company"))
-
-
-        # Write to db.
-
-        return el
+        # TODO Replace with DB GET
+        return self.get_item(el_id)
 
     def delete_item(self, el_id):
+        # TODO Replace with DB DELETE via ID
         matches = list(filter(lambda el: el["id"] == el_id, self.db_state))
 
         if matches:
