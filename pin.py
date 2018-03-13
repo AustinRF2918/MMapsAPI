@@ -93,7 +93,11 @@ class PinDao:
 
     def get_pin(self, pin_id):
         matches = list(filter(lambda pin: pin["id"] == pin_id, self.db_state))
-        return matches[0] if matches else None
+
+        if matches:
+            return matches[0]
+        else:
+            raise ResourceNotFoundException("pin", pin_id)
 
     def add_pin(self, pin):
         validate_conforming_types(pin, pin_fields, required_pin_fields)
@@ -106,6 +110,34 @@ class PinDao:
         self.db_state.append(pin)
 
         return pin
+
+    def updated_pin(self, pin_id, pin):
+        # TODO: implement this method.
+        old_pin = self.get_pin(pin_id)
+
+        # Method merge_on_fields(fields, old_pin, new_pin)
+
+        # new_pin = merge_on_fields(pin_putable_fields, old_pin, pin)
+
+        # If company is present...
+        # new_pin = merge_on_fields(pin_putable_fields, new_pin, pin.get("company"))
+
+
+        # Write to db.
+
+        return pin
+
+
+    def delete_pin(self, pin_id):
+        matches = list(filter(lambda pin: pin["id"] == pin_id, self.db_state))
+
+        if matches:
+            popped = matches[0]
+            self.db_state.remove(popped)
+            return popped
+        else:
+            raise ResourceNotFoundException("pin", pin_id)
+
 
 class PinList(Resource):
     def __init__(self):
@@ -129,19 +161,20 @@ class PinHashList(Resource):
         return self.pin_dao.get_pins(with_fields=["id", "hash"])
 
 class Pin(Resource):
+    """Domain object for Michigan Maps pin. More docs to go here."""
+
     def __init__(self):
         self.pin_dao = PinDao({})
 
-    """Domain object for Michigan Maps pin. More docs to go here."""
     @marshal_with(pin_fields)
-    def get(self, id, **kwargs):
-        result = self.pin_dao.get_pin(id)
+    def get(self, id):
+        return self.pin_dao.get_pin(id)
 
-        if result:
-            return result
-        else:
-            raise ResourceNotFoundException("pin", id)
+    @marshal_with(pin_fields)
+    def delete(self, id):
+        return self.pin_dao.delete_pin(id)
 
-    # TODO: Implement delete
-
-
+    @marshal_with(pin_fields)
+    def put(self, id):
+        pin = request.get_json(force=True)
+        return self.pin_dao.updated_pin(id, pin)
