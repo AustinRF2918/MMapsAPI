@@ -1,6 +1,7 @@
 """Schema definition for the decal pin object as well as its dependencies."""
 from flask_restful import fields
 
+from resources.schema import add_api_schema
 from util.schema_tools import fieldize_schema
 
 company_schema = {
@@ -171,3 +172,8 @@ pin_reduced_schema = {
         "hash": "lolz",
     }
 }
+
+add_api_schema(company_schema)
+add_api_schema(pin_schema)
+add_api_schema(pin_reduced_schema)
+

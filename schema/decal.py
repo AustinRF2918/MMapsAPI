@@ -2,6 +2,8 @@
 
 from flask_restful import fields
 
+from resources.schema import add_api_schema
+
 decal_schema = {
     "name": "decal",
     "fields": {
@@ -25,3 +27,5 @@ decal_schema = {
         "url": "http://www.azure.com/lol", "id": "lolz"
     }
 }
+
+add_api_schema(decal_schema)

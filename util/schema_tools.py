@@ -13,12 +13,22 @@ def fieldize_schema(schema):
     return fieldized_map
 
 
-validation_mapping = {
+flask_to_py_mapping = {
     fields.String: str,
     fields.Nested: dict,
     fields.List: list,
     fields.Integer: int,
     fields.Float: float,
+    fields.Boolean: bool,
+}
+
+py_to_swagger_mapping = {
+    str: "string",
+    dict: "object",
+    list: "array",
+    int: "integer",
+    float: "number",
+    bool: "boolean"
 }
 
 
@@ -58,9 +68,9 @@ def is_matching_schema(data, schema):
 
     for key, value in data.items():
         if schema_fields.get(key) is not None:
-            key_type = validation_mapping.get(schema_fields.get(key).get("type"))
+            key_type = flask_to_py_mapping.get(schema_fields.get(key).get("type"))
             if key_type == None:
-                key_type = validation_mapping.get(type(schema_fields.get(key).get("type")))
+                key_type = flask_to_py_mapping.get(type(schema_fields.get(key).get("type")))
 
             if key_type is not None and not isinstance(value, key_type):
                 raise TypeError("Key {} on schema {} was expected to be of type {}.".format(
