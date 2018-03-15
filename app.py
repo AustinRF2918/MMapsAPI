@@ -33,7 +33,7 @@ api.add_resource(PinHashList, "/pins/hash/")
 
 register_resource("/decals/", "decal", "Gets all decal resources", "get", {"200": {"schema": decal_schema, "array": True}})
 register_resource("/decals/", "decal", "Creates a decal", "post", {"200": {"schema": decal_schema, "array": False}})
-api.add_resource(DecalList, "/decal/")
+api.add_resource(DecalList, "/decals/")
 
 register_resource("/decals/{id}", "decal", "Gets a decal", "get", {"200": {"schema": decal_schema, "array": False}}, qparams=["id"])
 register_resource("/decals/{id}", "decal", "Deletes a decal", "delete", {"200": {"schema": decal_schema, "array": False}}, qparams=["id"])

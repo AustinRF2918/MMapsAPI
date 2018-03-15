@@ -5,9 +5,9 @@ from flask_restful import Resource, marshal_with
 
 from schema.decal import decal_schema
 from util.schema_tools import fieldize_schema
-from util.dao import MockDao
+from util.dao import MongoDao
 
-mock_decal_dao = MockDao(decal_schema)
+mock_decal_dao = MongoDao(decal_schema, "localhost", 27017)
 
 
 class DecalList(Resource):

@@ -45,18 +45,18 @@ pin_schema = {
     "name": "pin",
     "fields": {
         # Base Metadata
-        "id": {
+        "_id": {
             "type": fields.String,
             "required": False,
             "read_only": True,
             "description": "Server generated ID of a pin."
         },
 
-        "hash": {
-            "type": fields.String,
+        "revision": {
+            "type": fields.Integer,
             "required": False,
             "read_only": True,
-            "description": "Server generated hash of a pin."
+            "description": "Server generated revision of a pin."
         },
 
         # Core Domain Data
@@ -135,8 +135,8 @@ pin_schema = {
         }
     },
     "example": {
-        "id": "abcdefghi",
-        "hash": "lolz",
+        "_id": "5aa9e7734700a016fcc12ced",
+        "revision": 1,
 
         "phone_number": "234124",
         "description": "hai",
@@ -164,12 +164,12 @@ pin_reduced_schema = {
     "name": "pin_reduced",
     "fields": {
         # Base metadata: only contains this
-        "id": pin_schema["fields"]["id"],
-        "hash": pin_schema["fields"]["hash"]
+        "_id": pin_schema["fields"]["_id"],
+        "revision": pin_schema["fields"]["revision"]
     },
     "example": {
-        "id": "abcdefghi",
-        "hash": "lolz",
+        "_id": "abcdefghi",
+        "revision": "lolz",
     }
 }
 

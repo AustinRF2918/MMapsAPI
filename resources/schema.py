@@ -72,6 +72,9 @@ def register_resource(endpoint, tag, description, method, code_schema_mapping, r
                                 }
                             }
                         }
+                    },
+                    "examples": {
+                        "application/json": [value.get("schema").get("example")]
                     }
                 }
             else:
@@ -81,8 +84,11 @@ def register_resource(endpoint, tag, description, method, code_schema_mapping, r
                         "application/json": {
                             "schema": {
                                 "$ref": "#/definitions/" + value.get("schema").get("name")
-                            }
+                            },
                         }
+                    },
+                    "examples": {
+                        "application/json": value.get("schema").get("example")
                     }
                 }
 
@@ -91,7 +97,6 @@ def register_resource(endpoint, tag, description, method, code_schema_mapping, r
             parameters = [{
                     "in": "body",
                     "name": request_type,
-                    "description": "lol",
                     "schema": {
                         "$ref": "#/definitions/" + request_type
                 }
@@ -101,7 +106,6 @@ def register_resource(endpoint, tag, description, method, code_schema_mapping, r
             parameters = [{
                     "in": "body",
                     "name": tag,
-                    "description": "lol",
                     "schema": {
                         "$ref": "#/definitions/" + tag
                     }

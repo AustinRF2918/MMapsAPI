@@ -4,9 +4,9 @@ from flask_restful import Resource, marshal_with
 
 from schema.pin import pin_schema, pin_reduced_schema
 from util.schema_tools import fieldize_schema
-from util.dao import MockDao
+from util.dao import MongoDao
 
-mock_pin_dao = MockDao(pin_schema)
+mock_pin_dao = MongoDao(pin_schema, "localhost", 27017)
 
 
 class PinList(Resource):

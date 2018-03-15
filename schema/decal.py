@@ -8,7 +8,7 @@ decal_schema = {
     "name": "decal",
     "fields": {
         # Base Metadata
-        "id": {
+        "_id": {
             "type": fields.String,
             "required": False,
             "read_only": True,
@@ -24,7 +24,8 @@ decal_schema = {
         }
     },
     "example": {
-        "url": "http://www.azure.com/lol", "id": "lolz"
+        "_id": "5aa9e7734700a016fcc12ced",
+        "url": "http://www.azure.com/lol"
     }
 }
 
