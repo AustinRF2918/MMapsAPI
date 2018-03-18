@@ -5,13 +5,16 @@ from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 
 import errors.error_handlers
+from resources.company import CompanyList, Company, CompanyRevisionList
 from resources.decal import Decal, DecalList
-from resources.pin import Pin, PinList, PinHashList
+from resources.pin import Pin, PinList, PinRevisionList
 
 # Mapping of blueprint onto Flask application.
-from resources.schema import register_resource, Schema
+from resources.schema import Schema
+from schema.company import company_schema, company_reduced_schema
 from schema.decal import decal_schema
-from schema.pin import pin_schema, pin_reduced_schema
+from schema.pin import pin_response_schema, pin_request_schema, pin_pointer_schema
+from util.schema_tools import register_resource
 
 app = Flask(__name__)
 app.register_blueprint(errors.error_handlers.blueprint)
@@ -19,18 +22,34 @@ app.register_blueprint(errors.error_handlers.blueprint)
 # Mapping of Flask-RESTful resources to endpoints.
 # TODO: Make resource registration nicer.
 api = Api(app)
-register_resource("/pins/", "pin", "Gets all pin resources", "get", {"200": {"schema": pin_schema, "array": True}})
-register_resource("/pins/", "pin", "Creates a pin resource", "post", {"201": {"schema": pin_schema, "array": False}}, request_type="pin")
+
+# Pin Resources
+register_resource("/pins/", "pin", "Gets all pin resources", "get", {"200": {"schema": pin_response_schema, "array": True}})
+register_resource("/pins/", "pin", "Creates a pin resource", "post", {"201": {"schema": pin_response_schema, "array": False}}, request_type="pin_request")
 api.add_resource(PinList, "/pins/")
 
-register_resource("/pins/{id}", "pin", "Gets a pin resource", "get", {"200": {"schema": pin_schema, "array": False}}, qparams=["id"])
-register_resource("/pins/{id}", "pin", "Deletes a pin resource", "delete", {"200": {"schema": pin_schema, "array": False}}, qparams=["id"])
-register_resource("/pins/{id}", "pin", "Updates a pin resource", "patch", {"200": {"schema": pin_schema, "array": False}}, qparams=["id"])
+register_resource("/pins/{id}", "pin", "Gets a pin resource", "get", {"200": {"schema": pin_response_schema, "array": False}}, qparams=["id"])
+register_resource("/pins/{id}", "pin", "Deletes a pin resource", "delete", {"200": {"schema": pin_response_schema, "array": False}}, qparams=["id"])
+register_resource("/pins/{id}", "pin", "Updates a pin resource", "patch", {"200": {"schema": pin_response_schema, "array": False}}, qparams=["id"], request_type="pin_request")
 api.add_resource(Pin, "/pins/<id>")
 
-register_resource("/pins/hash/", "pin", "Gets all pin resources in a reduced form", "get", {"200": {"schema": pin_reduced_schema, "array": True}})
-api.add_resource(PinHashList, "/pins/hash/")
+register_resource("/pins/revisions/", "pin", "Gets all pin resources in a reduced form", "get", {"200": {"schema": pin_pointer_schema, "array": True}})
+api.add_resource(PinRevisionList, "/pins/revisions/")
 
+# Pin Resources
+register_resource("/companies/", "company", "Gets all company resources", "get", {"200": {"schema": company_schema, "array": True}})
+register_resource("/companies/", "company", "Creates a company resource", "post", {"201": {"schema": company_schema, "array": False}}, request_type="company")
+api.add_resource(CompanyList, "/companies/")
+
+register_resource("/companies/{id}", "company", "Gets a company resource", "get", {"200": {"schema": company_schema, "array": False}}, qparams=["id"])
+register_resource("/companies/{id}", "company", "Deletes a company resource", "delete", {"200": {"schema": company_schema, "array": False}}, qparams=["id"])
+register_resource("/companies/{id}", "company", "Updates a company resource", "patch", {"200": {"schema": company_schema, "array": False}}, qparams=["id"])
+api.add_resource(Company, "/companies/<id>")
+
+register_resource("/companies/revisions/", "company", "Gets all company resources in a reduced form", "get", {"200": {"schema": company_reduced_schema, "array": True}})
+api.add_resource(CompanyRevisionList, "/companies/revisions/")
+
+# Decal Resources
 register_resource("/decals/", "decal", "Gets all decal resources", "get", {"200": {"schema": decal_schema, "array": True}})
 register_resource("/decals/", "decal", "Creates a decal", "post", {"200": {"schema": decal_schema, "array": False}})
 api.add_resource(DecalList, "/decals/")
@@ -39,6 +58,7 @@ register_resource("/decals/{id}", "decal", "Gets a decal", "get", {"200": {"sche
 register_resource("/decals/{id}", "decal", "Deletes a decal", "delete", {"200": {"schema": decal_schema, "array": False}}, qparams=["id"])
 api.add_resource(Decal, "/decals/<id>")
 
+# Schema Resources
 api.add_resource(Schema, "/schema")
 
 # Register Swagger

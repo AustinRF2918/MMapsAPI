@@ -2,90 +2,54 @@
 
 import uuid
 
+import copy
 from bson import ObjectId
 from bson.errors import InvalidId
 from pymongo import MongoClient
 
 from errors.error_types import ResourceNotFoundException
-from util.schema_tools import is_matching_schema, merge_with_schema
-
-
-class MockDao:
-    def __init__(self, resource_schema):
-        self.db_state = [resource_schema.get("example")]
-        self.resource_schema = resource_schema
-
-    def get_all(self):
-        return self.db_state
-
-    def get_item(self, el_id):
-        matches = list(filter(lambda el: el["id"] == el_id, self.db_state))
-
-        if matches:
-            return matches[0]
-        else:
-            raise ResourceNotFoundException(self.resource_schema.get("name"), el_id)
-
-    def add_item(self, el):
-        is_matching_schema(el, self.resource_schema)
-
-        el["id"] = str(uuid.uuid4())
-        el["hash"] = hash(repr(el))
-
-        # TODO: Replace with actual DB push
-        self.db_state.append(el)
-
-        return el
-
-    def update_item(self, el_id, el):
-        # TODO: Replace with actual DB GET
-        old_el = self.get_item(el_id)
-        merged_el = merge_with_schema(old_el, el, self.resource_schema)
-
-        # TODO Replace with DB PUT
-        self.delete_item(el_id)
-        self.db_state.append(merged_el)
-
-        # TODO Replace with DB GET
-        return self.get_item(el_id)
-
-    def delete_item(self, el_id):
-        # TODO Replace with DB DELETE via ID
-        matches = list(filter(lambda el: el["id"] == el_id, self.db_state))
-
-        if matches:
-            popped = matches[0]
-            self.db_state.remove(popped)
-            return popped
-        else:
-            raise ResourceNotFoundException(self.resource_schema.get("name"), el_id)
+from util.schema_tools import is_matching_request_schema, merge_with_schema
 
 class MongoDao:
     def __init__(self, resource_schema, db_url, db_port):
-        self.db = MongoClient(db_url, db_port)["tripout"][resource_schema.get("name")]
+        self.db_url = db_url
+        self.db_port = db_port
+        self.schema_name = resource_schema.get("name")
+
+        self.db = MongoClient(db_url, db_port)["tripout"][self.schema_name]
         self.resource_schema = resource_schema
 
     def get_all(self):
-        return list(self.db.find({}))
+        print("Getting all in " + self.schema_name)
+        print("state: " + str(list(self.db.find({}))))
+        return list(map(self._render_pointers, list(self.db.find({}))))
 
     def get_item(self, el_id):
+        print("Getting item in " + self.schema_name)
         match = self.db.find_one({"_id": ObjectId(el_id)})
 
         if match:
-            return match
+            return self._render_pointers(match)
         else:
             raise ResourceNotFoundException(self.resource_schema.get("name"), el_id)
 
     def add_item(self, el):
-        is_matching_schema(el, self.resource_schema)
+        print("Adding item in " + self.schema_name)
 
         del el["_id"]
         el["revision"] = 1
 
+        # Validation
+        is_matching_request_schema(el, self.resource_schema)
+        self._validate_pointers(el)
+
         result = self.db.insert_one(el)
         return self.get_item(result.inserted_id)
 
+
     def update_item(self, el_id, el):
+        print("Updating item in " + self.schema_name)
+
         old_el = self.get_item(el_id)
 
         del old_el["_id"]
@@ -93,15 +57,55 @@ class MongoDao:
 
         merged_el = merge_with_schema(old_el, el, self.resource_schema)
 
+        # Validation
+        is_matching_request_schema(merged_el, self.resource_schema)
+        self._validate_pointers(merged_el)
+
         self.db.replace_one({"_id": ObjectId(el_id)}, merged_el)
 
         return self.get_item(el_id)
 
     def delete_item(self, el_id):
+        print("Deleting item in " + self.schema_name)
+
         try:
             match = self.get_item(el_id)
             self.db.delete_one({"_id": ObjectId(el_id)})
             return match
         except InvalidId:
             raise ResourceNotFoundException(self.resource_schema.get("name"), el_id)
+
+
+    def _validate_pointers(self, el):
+        # Additional DAO level validation to make sure reduced schema exists in db!
+        for key, value in self.resource_schema.get("fields").items():
+            if value.get("schema") is not None and value.get("schema").get("pointer_to") is not None and el.get(key):
+                resource_id = el.get(key).get("_id")
+                resource_name = value.get("schema").get("pointer_to").get("name")
+
+                # TODO Slow as hell. Use a map to cache dbs
+                result_db = MongoClient(self.db_url, self.db_port)["tripout"][resource_name]
+                cross_results = result_db.find_one({"_id": ObjectId(resource_id)})
+
+                if not cross_results:
+                    raise ResourceNotFoundException(resource_name, resource_id)
+
+    def _render_pointers(self, el):
+        rendered_el = copy.deepcopy(el)
+         # Additional DAO level validation to make sure reduced schema exists in db!
+        for key, value in self.resource_schema.get("fields").items():
+            if value.get("schema") is not None and value.get("schema").get("pointer_to") is not None and el.get(key):
+                    resource_id = el.get(key).get("_id")
+                    resource_name = value.get("schema").get("pointer_to").get("name")
+
+                    # TODO Slow as hell. Use a map to cache dbs
+                    result_db = MongoClient(self.db_url, self.db_port)["tripout"][resource_name]
+                    cross_results = result_db.find_one({"_id": ObjectId(resource_id)})
+
+                    if not cross_results:
+                        del rendered_el[key]
+                    else:
+                        rendered_el[key] = cross_results
+
+        return rendered_el
 

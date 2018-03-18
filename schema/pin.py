@@ -1,48 +1,12 @@
 """Schema definition for the decal pin object as well as its dependencies."""
+import copy
 from flask_restful import fields
 
-from resources.schema import add_api_schema
-from util.schema_tools import fieldize_schema
+from schema.company import company_schema, company_reduced_schema
+from util.schema_tools import fieldize_schema, register_schema
 
-company_schema = {
-    "name": "company",
-    "fields": {
-        # Core Domain Data
-        "title": {
-            "type": fields.String,
-            "required": True,
-            "read_only": False,
-            "description": "The name of a company that a company wishes to set as publicly viewable."
-        },
-        "message": {
-            "type": fields.String,
-            "required": True,
-            "read_only": False,
-            "description": "The message a company wishes to set as publicly viewable."
-        },
-        "is_featured": {
-            "type": fields.Boolean,
-            "required": True,
-            "read_only": False,
-            "description": "If a company has been featured by the client or not."
-        },
-        "photo_stream": {
-            "type": fields.List(fields.String),
-            "required": False,
-            "read_only": False,
-            "description": "Optional list of photo URLs a company wishes to display."
-        }
-    },
-    "example": {
-        "title": "Microsoft",
-        "message": "What do you wanna do today?",
-        "is_featured": True,
-        "photo_stream": ["azure.com/1", "azure.com/2"]
-    }
-}
-
-pin_schema = {
-    "name": "pin",
+pin_request_schema = register_schema({
+    "name": "pin_request",
     "fields": {
         # Base Metadata
         "_id": {
@@ -54,7 +18,7 @@ pin_schema = {
 
         "revision": {
             "type": fields.Integer,
-            "required": False,
+            "required": True,
             "read_only": True,
             "description": "Server generated revision of a pin."
         },
@@ -85,11 +49,11 @@ pin_schema = {
             "description": "Link to the URL of an establishment a company wishes to use."
         },
         "company_data": {
-            "type": fields.Nested(fieldize_schema(company_schema)),
+            "type": fields.Nested(fieldize_schema(company_reduced_schema)),
             "required": False,
             "read_only": False,
             "description": "Company data structure giving more metadata about parent company of an establishment",
-            "schema": company_schema
+            "schema": company_reduced_schema
         },
 
         # Tagging Metadata
@@ -143,6 +107,8 @@ pin_schema = {
         "address": "123214 dafdsa",
         "image": "azure.com/fdasfdsa",
         "company_data": {
+            "_id": "5aa9e7734700a016fcc12cee",
+            "revision": 2,
             "title": "Microsoft",
             "message": "What do you wanna do today?",
             "is_featured": True,
@@ -158,22 +124,36 @@ pin_schema = {
         "social_links": ["facebook.com/microsoft"],
         "website_link": "microsoft.com"
     }
-}
+})
 
-pin_reduced_schema = {
+pin_response_schema = copy.deepcopy(pin_request_schema)
+pin_response_schema["name"] = "pin_response"
+pin_response_schema["fields"]["company_data"]["type"] = fields.Nested(fieldize_schema(company_schema))
+pin_response_schema["fields"]["company_data"]["schema"] = company_schema
+pin_response_schema = register_schema(pin_response_schema)
+
+
+pin_pointer_schema = register_schema({
     "name": "pin_reduced",
     "fields": {
         # Base metadata: only contains this
-        "_id": pin_schema["fields"]["_id"],
-        "revision": pin_schema["fields"]["revision"]
+        "_id": {
+            "type": fields.String,
+            "required": True,
+            "read_only": False,
+            "description": "_id pointing to pin resource."
+        },
+        "revision": {
+            "type": fields.Integer,
+            "required": True,
+            "read_only": True,
+            "description": "revision of pin pointer."
+        }
     },
     "example": {
         "_id": "abcdefghi",
-        "revision": "lolz",
-    }
-}
-
-add_api_schema(company_schema)
-add_api_schema(pin_schema)
-add_api_schema(pin_reduced_schema)
+        "revision": 1,
+    },
+    "use_as": "pointer"
+})
 

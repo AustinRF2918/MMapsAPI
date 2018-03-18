@@ -2,9 +2,9 @@
 
 from flask_restful import fields
 
-from resources.schema import add_api_schema
+from util.schema_tools import register_schema
 
-decal_schema = {
+decal_schema = register_schema({
     "name": "decal",
     "fields": {
         # Base Metadata
@@ -27,6 +27,4 @@ decal_schema = {
         "_id": "5aa9e7734700a016fcc12ced",
         "url": "http://www.azure.com/lol"
     }
-}
-
-add_api_schema(decal_schema)
+})
