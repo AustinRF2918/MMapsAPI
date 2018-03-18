@@ -41,6 +41,12 @@ company_schema = register_schema({
             "read_only": False,
             "description": "If a company has been featured by the client or not."
         },
+        "is_active": {
+            "type": fields.Boolean,
+            "required": True,
+            "read_only": False,
+            "description": "If a company has been registered as active by the client"
+        },
         "photo_stream": {
             "type": fields.List(fields.String),
             "required": False,
@@ -54,6 +60,7 @@ company_schema = register_schema({
         "title": "Microsoft",
         "message": "What do you wanna do today?",
         "is_featured": True,
+        "is_active": True,
         "photo_stream": ["azure.com/1", "azure.com/2"]
     }
 })

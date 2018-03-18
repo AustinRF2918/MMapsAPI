@@ -112,6 +112,7 @@ pin_request_schema = register_schema({
             "title": "Microsoft",
             "message": "What do you wanna do today?",
             "is_featured": True,
+            "is_active": True,
             "photo_stream": ["azure.com/1", "azure.com/2"]
         },
 
@@ -126,6 +127,7 @@ pin_request_schema = register_schema({
     }
 })
 
+# Pin response is just a little different from pin request.
 pin_response_schema = copy.deepcopy(pin_request_schema)
 pin_response_schema["name"] = "pin_response"
 pin_response_schema["fields"]["company_data"]["type"] = fields.Nested(fieldize_schema(company_schema))
