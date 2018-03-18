@@ -1,8 +1,9 @@
 """Tools for working with schema types."""
 import copy
+from functools import wraps
 
 from apispec import APISpec
-from flask_restful import fields
+from flask_restful import fields, marshal_with
 
 
 def fieldize_schema(schema):
@@ -228,3 +229,13 @@ def register_resource(endpoint, tag, description, method, code_schema_mapping, r
             }
         }
     )
+
+
+class marshal_with_schema(object):
+    """Wraps standard flask marshaller to use our own."""
+
+    def __init__(self, schema, envelope=None):
+        self.marshaller = marshal_with(fieldize_schema(schema))
+
+    def __call__(self, f):
+        return self.marshaller.__call__(f)
