@@ -7,9 +7,10 @@ from flask import jsonify, Blueprint
 
 from errors.error_types import MissingFieldException, ResourceNotFoundException
 
-blueprint = Blueprint("errors.error_handlers", __name__)
+error_handler = Blueprint("errors.error_handlers", __name__)
 
-@blueprint.app_errorhandler(MissingFieldException)
+
+@error_handler.app_errorhandler(MissingFieldException)
 def handle_missing_field(error):
     return jsonify({
         "type": type(error).__name__,
@@ -18,17 +19,17 @@ def handle_missing_field(error):
     }), 500
 
 
-@blueprint.app_errorhandler(ResourceNotFoundException)
+@error_handler.app_errorhandler(ResourceNotFoundException)
 def handle_resource_not_found(error):
     return jsonify({
         "type": type(error).__name__,
         "message": error.message,
         "resource": error.resource,
         "resource_id": error.resource_id
-    }), 404
+    }), 403
 
 
-@blueprint.app_errorhandler(Exception)
+@error_handler.app_errorhandler(Exception)
 def handle_generic_exception(error):
     traceback.print_tb(error.__traceback__)
 

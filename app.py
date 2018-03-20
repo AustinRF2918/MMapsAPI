@@ -3,6 +3,7 @@
 from flask import Flask
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
+from flask_cors import CORS
 
 import errors.error_handlers
 from resources.company import CompanyList, Company, CompanyRevisionList
@@ -17,11 +18,18 @@ from schema.pin import pin_response_schema, pin_request_schema, pin_pointer_sche
 from util.schema_tools import register_resource
 
 app = Flask(__name__)
-app.register_blueprint(errors.error_handlers.blueprint)
+CORS(app)
+app.config['TRAP_HTTP_EXCEPTIONS']=True
 
 # Mapping of Flask-RESTful resources to endpoints.
 # TODO: Make resource registration nicer.
+
+# Bug with flask restful: we have to overwrite this to use our own.
+handle_exception = app.handle_exception
+handle_user_exception = app.handle_user_exception
 api = Api(app)
+app.handle_exception = handle_exception
+app.handle_user_exception = handle_user_exception
 
 # Pin Resources
 register_resource("/pins/", "pin", "Gets all pin resources", "get", {"200": {"schema": pin_response_schema, "array": True}})
@@ -82,9 +90,12 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     # }
 )
 
-# Register blueprint at URL
-# (URL must match the one given to factory function above)
-app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
-# Start it!
-app.run(debug = True)
+if __name__ == "__main__":
+    # Register blueprint at URL
+    # (URL must match the one given to factory function above)
+    app.register_blueprint(errors.error_handlers.error_handler)
+    app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+    # Start it!
+    app.run(debug=True)
