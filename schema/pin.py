@@ -12,14 +12,14 @@ pin_request_schema = register_schema({
         "_id": {
             "type": fields.String,
             "required": False,
-            "read_only": True,
+            "readOnly": True,
             "description": "Server generated ID of a pin."
         },
 
         "revision": {
             "type": fields.Integer,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "Server generated revision of a pin."
         },
 
@@ -27,31 +27,31 @@ pin_request_schema = register_schema({
         "phone_number": {
             "type": fields.String,
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Phone number a company can be contacted at."
         },
         "description": {
             "type": fields.String,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "Publicly viewable description of a company."
         },
         "address": {
             "type": fields.String,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "Publicly viewable address of a company."
         },
         "image": {
             "type": fields.String,
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Link to the URL of an establishment a company wishes to use."
         },
         "company_data": {
             "type": fields.Nested(fieldize_schema(company_reduced_schema)),
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Company data structure giving more metadata about parent company of an establishment",
             "schema": company_reduced_schema
         },
@@ -60,7 +60,7 @@ pin_request_schema = register_schema({
         "tags": {
             "type": fields.List(fields.String),
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "List of tags a company wishes to use."
         },
 
@@ -68,13 +68,13 @@ pin_request_schema = register_schema({
         "latitude": {
             "type": fields.Float,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "Latitude in float of an establishment."
         },
         "longitude": {
             "type": fields.Float,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "Longitude in float of an establishment."
         },
 
@@ -82,19 +82,19 @@ pin_request_schema = register_schema({
         "logo_image_link": {
             "type": fields.String,
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Logo of an establishment."
         },
         "social_links": {
             "type": fields.List(fields.String),
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "List of social links related to an establishment."
         },
         "website_link": {
             "type": fields.String,
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Link to a website of an establishment."
         }
     },
@@ -142,13 +142,13 @@ pin_pointer_schema = register_schema({
         "_id": {
             "type": fields.String,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "_id pointing to pin resource."
         },
         "revision": {
             "type": fields.Integer,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "revision of pin pointer."
         }
     },

@@ -11,14 +11,14 @@ company_schema = register_schema({
         "_id": {
             "type": fields.String,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "Database generated uniqueId of a company."
         },
 
         "revision": {
             "type": fields.Integer,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "Server generated revision of a pin."
         },
 
@@ -26,31 +26,31 @@ company_schema = register_schema({
         "title": {
             "type": fields.String,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "The name of a company that a company wishes to set as publicly viewable."
         },
         "message": {
             "type": fields.String,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "The message a company wishes to set as publicly viewable."
         },
         "is_featured": {
             "type": fields.Boolean,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "If a company has been featured by the client or not."
         },
         "is_active": {
             "type": fields.Boolean,
             "required": True,
-            "read_only": False,
+            "readOnly": False,
             "description": "If a company has been registered as active by the client"
         },
         "photo_stream": {
             "type": fields.List(fields.String),
             "required": False,
-            "read_only": False,
+            "readOnly": False,
             "description": "Optional list of photo URLs a company wishes to display."
         }
     },
@@ -72,13 +72,13 @@ company_reduced_schema = register_schema({
         "_id": {
             "type": fields.String,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "_id pointing to company resource."
         },
         "revision": {
             "type": fields.Integer,
             "required": False,
-            "read_only": True,
+            "readOnly": True,
             "description": "revision of company pointer."
         }
     },

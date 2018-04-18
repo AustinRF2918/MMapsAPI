@@ -44,7 +44,7 @@ def validate_schema(schema: dict):
         assert type(value) is dict
         assert type(value.get("type")) is not None
         assert type(value.get("required")) is bool
-        assert type(value.get("read_only")) is bool
+        assert type(value.get("readOnly")) is bool
         assert type(value.get("description")) is str
     assert type(schema.get("example")) is dict
 
@@ -70,7 +70,7 @@ def get_required_request_fields(schema: dict) -> frozenset:
 
     required_fields = set()
     for key, value in schema.get("fields").items():
-        if value["required"] and not value["read_only"]:
+        if value["required"] and not value["readOnly"]:
             required_fields.add(key)
 
     return frozenset(required_fields)
@@ -83,7 +83,7 @@ def get_request_fields(schema: dict) -> frozenset:
 
     writeable_fields = set()
     for key, value in schema.get("fields").items():
-        if not value["read_only"]:
+        if not value["readOnly"]:
             writeable_fields.add(key)
 
     return frozenset(writeable_fields)
@@ -193,6 +193,8 @@ def register_schema(schema: dict) -> dict:
                 # Case 1: List of ->Object.
                 mapped_fields[key] = {
                     "type": "array",
+                    "required": value.get("required"),
+                    "readOnly": value.get("readOnly"),
                     "items": {
                         "$ref": schema_reference
                     }
@@ -200,6 +202,8 @@ def register_schema(schema: dict) -> dict:
             else:
                 # Case 2: ->Object
                 mapped_fields[key] = {
+                    "required": value.get("required"),
+                    "readOnly": value.get("readOnly"),
                     "$ref": schema_reference
                 }
         else:
@@ -208,6 +212,8 @@ def register_schema(schema: dict) -> dict:
                 list_type = type(value.get("type").container)
 
                 mapped_fields[key] = {
+                    "required": value.get("required"),
+                    "readOnly": value.get("readOnly"),
                     "type": py_to_swagger_mapping[item_type],
                     "items": {
                         "type": py_to_swagger_mapping[flask_to_py_mapping[list_type]]
@@ -216,6 +222,8 @@ def register_schema(schema: dict) -> dict:
             else:
                 # Case 4: Primitive
                 mapped_fields[key] = {
+                    "required": value.get("required"),
+                    "readOnly": value.get("readOnly"),
                     "type": py_to_swagger_mapping[item_type],
                 }
 

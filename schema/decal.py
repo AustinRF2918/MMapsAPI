@@ -11,7 +11,7 @@ decal_schema = register_schema({
         "_id": {
             "type": fields.String,
             "required": False,
-            "read_only": True,
+            "readOnly": True,
             "description": "Server generated ID of a decal."
         },
 
@@ -19,7 +19,7 @@ decal_schema = register_schema({
         "url": {
             "type": fields.String,
             "required": True,
-            "read_only": True,
+            "readOnly": True,
             "description": "Url to given image of a decal."
         }
     },

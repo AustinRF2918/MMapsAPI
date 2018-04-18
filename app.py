@@ -19,7 +19,6 @@ from util.schema_tools import register_resource
 
 app = Flask(__name__)
 CORS(app)
-app.config['TRAP_HTTP_EXCEPTIONS']=True
 
 # Mapping of Flask-RESTful resources to endpoints.
 # TODO: Make resource registration nicer.
@@ -98,4 +97,4 @@ if __name__ == "__main__":
     app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
 
     # Start it!
-    app.run(debug=True)
+    app.run(threaded=True, debug=True)

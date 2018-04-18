@@ -3,9 +3,11 @@
 import uuid
 
 import copy
+import sys
 from bson import ObjectId
 from bson.errors import InvalidId
 from pymongo import MongoClient
+from pymongo.errors import ServerSelectionTimeoutError
 
 from errors.error_types import ResourceNotFoundException
 from util.schema_tools import validate_data_to_schema, merge_with_schema, marshal_with_schema
@@ -13,14 +15,39 @@ from util.schema_tools import validate_data_to_schema, merge_with_schema, marsha
 
 class MongoDao:
     def __init__(self, resource_schema, db_url, db_port):
+        """
+        Constructor for MongoDao. Given a resource_schema, db_url and db_port,
+        will connect to a MongoDb server, validate the connection, and connect
+        to the resource_schema named collection.
+
+        TODO: Refactor sys.exit to throw to avoid coupling with user application.
+        """
         self.db_url = db_url
         self.db_port = db_port
         self.schema_name = resource_schema.get("name")
-
-        self.db = MongoClient(db_url, db_port)["tripout"][self.schema_name]
         self.resource_schema = resource_schema
 
+        try:
+            client = MongoClient(db_url, db_port, serverSelectionTimeoutMS=3000)
+            client.server_info()
+
+            # TODO: Pass DB name or pull from config instead to avoid coupling with user
+            # application.
+            self.db = client["tripout"][self.schema_name]
+        except ServerSelectionTimeoutError as err:
+            # This pretty much means we had some issue with querying the database
+            # after 3000 mseconds.
+            sys.exit("Issue contacting MongoDb server while creating "
+                    + "MongoDao for {}. Halting server.".format(self.schema_name))
+
+        print("Successfully registered MongoDao for schema: {}".format(self.schema_name))
+
     def get_all(self):
+        """
+        Gets all the resources of a certain MongoDao. Also deserializes _id as string. Note
+        this returns ALL items in a DB, and thus may potentially lead to performance issues
+        on larger DBs.
+        """
         def replace_id(item):
             item["_id"] = str(item["_id"])
             return item
