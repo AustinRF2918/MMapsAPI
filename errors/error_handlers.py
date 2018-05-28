@@ -31,6 +31,9 @@ def handle_resource_not_found(error):
 
 @error_handler.app_errorhandler(Exception)
 def handle_generic_exception(error):
+    print("ERROR: " + type(error).__name__)
+    print("MESSAGE: " + str(error))
+
     traceback.print_tb(error.__traceback__)
 
     return jsonify({
