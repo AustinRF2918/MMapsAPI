@@ -141,15 +141,19 @@ def validate_data_to_schema(data: dict, schema: dict):
     for key, value in data.items():
         if schema_fields.get(key) is not None:
             key_type = deduce_field_mapping(schema_fields.get(key))
+            required = schema_fields.get(key)["required"]
 
+            if not required and value is None:
+                # Case 3 Value is not required and value was none.
+                return
             if key_type is not None and not isinstance(value, key_type):
                 # Case 1: Key type doesn't coorespond to actual type.
                 raise TypeError("Key {} on schema {} was expected to be of type {} but was {}.".format(
                     key,
                     schema.get("name"),
                     key_type,
-                    type(value)
-                ))
+                    str(type(value))
+                    ))
             else:
                 # Case 2: It does, but it is also a nested type
                 item_schema = schema_fields.get(key).get("schema")
