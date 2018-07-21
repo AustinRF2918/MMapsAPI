@@ -67,7 +67,7 @@ class MongoDao:
     def add_item(self, el):
         print("Adding item in " + self.schema_name)
 
-        del el["_id"]
+        el.pop("_id", None)
         el["revision"] = 1
 
         # Validation
@@ -81,8 +81,7 @@ class MongoDao:
         print("Updating item in " + self.schema_name)
 
         old_el = self.get_item(el_id)
-
-        del old_el["_id"]
+        el.pop("_id", None)
         old_el["revision"] = old_el["revision"] + 1
 
         merged_el = merge_with_schema(old_el, el, self.resource_schema)
