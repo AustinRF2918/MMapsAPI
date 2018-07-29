@@ -48,6 +48,12 @@ pin_request_schema = register_schema({
             "readOnly": False,
             "description": "Link to the URL of an establishment a company wishes to use."
         },
+        "email_address": {
+            "type": fields.String,
+            "required": False,
+            "readOnly": False,
+            "description": "Email for the owner of this pin"
+        },
         "company_data": {
             "type": fields.Nested(fieldize_schema(company_reduced_schema)),
             "required": False,
@@ -85,11 +91,29 @@ pin_request_schema = register_schema({
             "readOnly": False,
             "description": "Logo of an establishment."
         },
-        "social_links": {
-            "type": fields.List(fields.String),
+        "facebook_link": {
+            "type": fields.String,
             "required": False,
             "readOnly": False,
-            "description": "List of social links related to an establishment."
+            "description": "Link to Facebook page for a pin."
+        },
+        "twitter_link": {
+            "type": fields.String,
+            "required": False,
+            "readOnly": False,
+            "description": "Link to Twitter page for a pin."
+        },
+        "pinterest_link": {
+            "type": fields.String,
+            "required": False,
+            "readOnly": False,
+            "description": "Link to Pinterest page for a pin."
+        },
+        "instagram_link": {
+            "type": fields.String,
+            "required": False,
+            "readOnly": False,
+            "description": "Link to Instagram page for a pin."
         },
         "website_link": {
             "type": fields.String,
@@ -101,11 +125,14 @@ pin_request_schema = register_schema({
     "example": {
         "_id": "5aa9e7734700a016fcc12ced",
         "revision": 1,
-
         "phone_number": "234124",
         "description": "hai",
         "address": "123214 dafdsa",
         "image": "azure.com/fdasfdsa",
+        "facebook_link": "facebook.com/gdasgfdsa",
+        "twitter_link": "twitter.com/gdasgfdsa",
+        "pinterest_link": "pinterest.com/gdasgfdsa",
+        "instagram_link": "instagram.com/gdasgfdsa",
         "company_data": {
             "_id": "5aa9e7734700a016fcc12cee",
             "revision": 2,
