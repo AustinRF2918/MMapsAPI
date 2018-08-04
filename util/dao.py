@@ -85,6 +85,7 @@ class MongoDao:
         old_el["revision"] = old_el["revision"] + 1
 
         merged_el = merge_with_schema(old_el, el, self.resource_schema)
+        merged_el.pop("_id", None)
 
         # Validation
         validate_data_to_schema(merged_el, self.resource_schema)
