@@ -6,6 +6,8 @@ from schema.pin import pin_request_schema, pin_pointer_schema, pin_response_sche
 from util.dao import MongoDao
 from util.schema_tools import marshal_with_schema
 
+from tools.migrate import translate_to_old
+
 pin_dao = MongoDao(pin_request_schema, "localhost", 27017)
 
 
@@ -17,6 +19,9 @@ class PinList(Resource):
         pin = request.get_json(force=True)
         return pin_dao.add_item(pin)
 
+class PinListLegacy(Resource):
+    def get(self):
+        return list(map(translate_to_old, pin_dao.get_all()))
 
 class PinRevisionList(Resource):
     def get(self):
