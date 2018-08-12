@@ -34,7 +34,31 @@ pin_request_schema = register_schema({
             "type": fields.String,
             "required": True,
             "readOnly": False,
-            "description": "Publicly viewable description of a company."
+            "description": "Publicly viewable description of a pin."
+        },
+        "offer_title": {
+            "type": fields.String,
+            "required": True,
+            "readOnly": False,
+            "description": "Offer title for a user."
+        },
+        "offer_description": {
+            "type": fields.String,
+            "required": True,
+            "readOnly": False,
+            "description": "Offer title for a user."
+        },
+        "video": {
+            "type": fields.String,
+            "required": True,
+            "readOnly": False,
+            "description": "The video of a pin."
+        },
+        "name": {
+            "type": fields.String,
+            "required": True,
+            "readOnly": False,
+            "description": "The name of a pin."
         },
         "address": {
             "type": fields.String,
@@ -130,6 +154,7 @@ pin_request_schema = register_schema({
         "address": "123214 dafdsa",
         "image": "azure.com/fdasfdsa",
         "facebook_link": "facebook.com/gdasgfdsa",
+        "name": "microsoft headquarters",
         "twitter_link": "twitter.com/gdasgfdsa",
         "pinterest_link": "pinterest.com/gdasgfdsa",
         "instagram_link": "instagram.com/gdasgfdsa",
@@ -150,7 +175,10 @@ pin_request_schema = register_schema({
 
         "logo_image_link": "azure.com/lolzers",
         "social_links": ["facebook.com/microsoft"],
-        "website_link": "microsoft.com"
+        "website_link": "microsoft.com",
+        "video": "youtube.com/lol",
+        "offer_title": "lol",
+        "offer_description": "lol"
     }
 })
 
