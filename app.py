@@ -1,11 +1,19 @@
 """Starting point of the application. Maps resources to endpoints and runs the application."""
 
+# Standard Library Utilities
+import json
+
+# Flask Stuff
 from flask import Flask
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
+from flask_httpauth import HTTPBasicAuth
 
+# Error Handling
 import errors.error_handlers
+
+# Resources
 from resources.company import CompanyList, Company, CompanyRevisionList
 from resources.decal import Decal, DecalList
 from resources.pin import Pin, PinList, PinRevisionList, PinListLegacy
@@ -16,6 +24,7 @@ from schema.company import company_schema, company_reduced_schema
 from schema.decal import decal_schema
 from schema.pin import pin_response_schema, pin_request_schema, pin_pointer_schema
 from util.schema_tools import register_resource
+from util.auth import auth
 
 app = Flask(__name__)
 CORS(app)
@@ -78,7 +87,7 @@ swaggerui_blueprint = get_swaggerui_blueprint(
     SWAGGER_URL,  # Swagger UI static files will be mapped to '{SWAGGER_URL}/dist/'
     API_URL,
     config={  # Swagger UI config overrides
-        'app_name': "Test application"
+        'app_name': "MMAPS Api"
     },
     # oauth_config={  # OAuth config. See https://github.com/swagger-api/swagger-ui#oauth2-configuration .
     #    'clientId': "your-client-id",
