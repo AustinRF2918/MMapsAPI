@@ -17,7 +17,7 @@ company_schema = register_schema({
 
         "revision": {
             "type": fields.Integer,
-            "required": True,
+            "required": False,
             "readOnly": True,
             "description": "Server generated revision of a pin."
         },

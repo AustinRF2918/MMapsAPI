@@ -19,7 +19,7 @@ decal_schema = register_schema({
         "url": {
             "type": fields.String,
             "required": True,
-            "readOnly": True,
+            "readOnly": False,
             "description": "Url to given image of a decal."
         }
     },

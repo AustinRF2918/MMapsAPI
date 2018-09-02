@@ -9,7 +9,7 @@ from util.schema_tools import marshal_with_schema
 from util.dao import MongoDao
 from util.auth import auth
 
-decal_dao = MongoDao(decal_schema, "localhost", 27017)
+decal_dao = MongoDao(decal_schema, "mongodb://localhost", 27017)
 
 class DecalList(Resource):
     def get(self):

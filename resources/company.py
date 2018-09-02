@@ -8,7 +8,8 @@ from util.schema_tools import marshal_with_schema
 from util.dao import MongoDao
 from util.auth import auth
 
-company_dao = MongoDao(company_schema, "localhost", 27017)
+company_dao = MongoDao(company_schema, "mongodb://localhost", 27017)
+
 
 class CompanyList(Resource):
     def get(self):

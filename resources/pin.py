@@ -10,7 +10,7 @@ from util.schema_tools import marshal_with_schema
 from tools.migrate import translate_to_old
 from util.auth import auth
 
-pin_dao = MongoDao(pin_request_schema, "localhost", 27017)
+pin_dao = MongoDao(pin_request_schema, "mongodb://localhost", 27017)
 
 class PinList(Resource):
     def get(self):
