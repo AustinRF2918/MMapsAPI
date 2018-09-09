@@ -12,6 +12,7 @@ def translate_from_old(old):
             "address": old["address"],
             "image": old["logoId"],
             "name": old["name"],
+            "website_link": old["url"],
             "video": old["videourl"],
             "latitude": old["lat"],
             "longitude": old["long"],
@@ -20,13 +21,13 @@ def translate_from_old(old):
             "offer_description": old["offerDescription"],
     }
 
-# TODO - convert
 def translate_to_old(new):
     return {
         "phoneNumber": new["phone_number"],
         "description": new["description"],
         "address": new["address"],
         "logoId": new["image"],
+        "url": new["website_link"],
         "name": new["name"],
         "videourl": new["video"],
         "lat": new["latitude"],
@@ -36,12 +37,23 @@ def translate_to_old(new):
         "offerDescription": new["offer_description"],
     }
 
-def translate_file_to_endpoint(file, url):
+def translate_file_to_endpoint(file, root, username, password):
     with open(file) as f:
         data = json.load(f)
         for item in data:
             new_item = translate_from_old(item)
-            requests.post(url, json=new_item, auth=HTTPBasicAuth("anne", "matrix"))
+            print("Translated item with name: {}".format(new_item["name"]))
+            requests.post(root, json=new_item, auth=HTTPBasicAuth("mmalt", "secrettripoutpassword1"))
 
 if __name__ == "__main__":
-    translate_file_to_endpoint(sys.argv[1], sys.argv[2])
+    # Get the root that was passed in by the user
+    try:
+        root = sys.argv[1]
+        username = sys.argv[2]
+        password = sys.argv[3]
+        filename = sys.argv[4]
+    except IndexError: 
+        print("root url, username, password, and filename must be entered to migrate tripout db.")
+        exit(1)
+
+    translate_file_to_endpoint(filename, root, username, password)
