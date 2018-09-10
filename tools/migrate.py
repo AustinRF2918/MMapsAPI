@@ -42,8 +42,8 @@ def translate_file_to_endpoint(file, root, username, password):
         data = json.load(f)
         for item in data:
             new_item = translate_from_old(item)
+            requests.post(root + "/pins/", json=new_item, auth=HTTPBasicAuth(username, password))
             print("Translated item with name: {}".format(new_item["name"]))
-            requests.post(root, json=new_item, auth=HTTPBasicAuth("mmalt", "secrettripoutpassword1"))
 
 if __name__ == "__main__":
     # Get the root that was passed in by the user

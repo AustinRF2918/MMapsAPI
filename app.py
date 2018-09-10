@@ -4,7 +4,7 @@
 import json
 
 # Flask Stuff
-from flask import Flask
+from flask import Flask, Response
 from flask_restful import Api
 from flask_swagger_ui import get_swaggerui_blueprint
 from flask_cors import CORS
@@ -16,7 +16,7 @@ import errors.error_handlers
 # Resources
 from resources.company import CompanyList, Company, CompanyRevisionList
 from resources.decal import Decal, DecalList
-from resources.pin import Pin, PinList, PinRevisionList, PinListLegacy
+from resources.pin import Pin, PinList, PinRevisionList, get_legacy_pins
 
 # Mapping of blueprint onto Flask application.
 from resources.schema import Schema
@@ -43,7 +43,10 @@ app.handle_user_exception = handle_user_exception
 register_resource("/pins/", "pin", "Gets all pin resources", "get", {"200": {"schema": pin_response_schema, "array": True}})
 register_resource("/pins/", "pin", "Creates a pin resource", "post", {"201": {"schema": pin_response_schema, "array": False}}, request_type="pin_request")
 api.add_resource(PinList, "/pins/")
-api.add_resource(PinListLegacy, "/pins/legacy/")
+
+@app.route('/pins/legacy/')
+def legacy_pin_route():
+    return Response(get_legacy_pins(), mimetype="text/json", headers={"Content-Disposition": "attachment; filename=pins.json"})
 
 register_resource("/pins/{id}", "pin", "Gets a pin resource", "get", {"200": {"schema": pin_response_schema, "array": False}}, qparams=["id"])
 register_resource("/pins/{id}", "pin", "Deletes a pin resource", "delete", {"200": {"schema": pin_response_schema, "array": False}}, qparams=["id"])

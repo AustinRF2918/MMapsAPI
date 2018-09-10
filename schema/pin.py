@@ -141,7 +141,7 @@ pin_request_schema = register_schema({
         },
         "website_link": {
             "type": fields.String,
-            "required": False,
+            "required": True,
             "readOnly": False,
             "description": "Link to a website of an establishment."
         }
